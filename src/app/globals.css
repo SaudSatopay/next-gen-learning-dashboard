@@ -1,26 +1,104 @@
 @import "tailwindcss";
 
+/*
+  Design system — "Sunset Console"
+  Near-black canvas with a magenta → coral → amber glow.
+  Tokens defined here become Tailwind utilities (bg-canvas, text-ink, font-display, …).
+*/
+@theme {
+  --color-canvas: #09080b;
+  --color-surface: #131217;
+  --color-surface-2: #1a191f;
+  --color-ink: #f5f4f7;
+  --color-muted: #9a96a3;
+  --color-magenta: #ff2d9b;
+  --color-coral: #ff6b3d;
+  --color-amber: #ffb020;
+
+  --font-display: var(--font-syne), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* Dark mode only — never follow the system preference. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Sunset gradient applied to text. */
+.text-gradient {
+  background-image: linear-gradient(
+    115deg,
+    var(--color-magenta) 0%,
+    var(--color-coral) 50%,
+    var(--color-amber) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Sunset gradient as a background fill (version-proof; avoids v4 gradient-utility renames). */
+.bg-sunset {
+  background-image: linear-gradient(
+    115deg,
+    var(--color-magenta) 0%,
+    var(--color-coral) 50%,
+    var(--color-amber) 100%
+  );
+}
+
+/* Fine film-grain texture (SVG noise, no extra network request). */
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Refined dark scrollbar. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+  background-clip: padding-box;
+}
+
+::selection {
+  background: rgba(255, 45, 155, 0.32);
+  color: #fff;
+}
+
+/* Honour reduced-motion for any CSS-driven transitions/animations.
+   Framer Motion is handled separately via useReducedMotion(). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
