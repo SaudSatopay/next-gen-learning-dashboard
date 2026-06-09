@@ -8,17 +8,23 @@ import { pillSpring } from "@/lib/motion";
 
 /**
  * Collapsible primary navigation.
- * - Desktop (lg): full width, collapsible via the toggle.
+ * - Desktop (lg): full width with labels; collapsible to icon-only via the toggle.
  * - Tablet (md): always icon-only (the expanded width only applies at lg).
  * - Mobile: hidden — replaced by <MobileNav />.
  *
- * Labels are clipped by the animated width (overflow-hidden + nowrap), so the
- * collapse is a single smooth width transition. The active item is highlighted
- * by a shared-layout pill (layoutId) that springs into place on click.
+ * Labels are cleanly hidden (display:none) whenever the rail is icon-only — i.e.
+ * when collapsed, or below the lg breakpoint — and the icons center themselves.
+ * `overflow-hidden` only clips the brief width transition. The active item is a
+ * shared-layout pill (layoutId) that springs into place on click.
  */
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [active, setActive] = useState("dashboard");
+
+  // Show labels only when expanded AND on desktop; tablet stays icon-only.
+  const labelCls = collapsed ? "hidden" : "hidden lg:inline";
+  // Center icons when icon-only; left-align once labels are visible.
+  const rowCls = collapsed ? "justify-center" : "justify-center lg:justify-start";
 
   return (
     <nav
@@ -28,11 +34,11 @@ export function Sidebar() {
       }`}
     >
       {/* Brand */}
-      <div className="flex h-[72px] shrink-0 items-center gap-3 px-[18px]">
+      <div className={`flex h-[72px] shrink-0 items-center gap-3 px-4 ${rowCls}`}>
         <span className="bg-sunset grid h-9 w-9 shrink-0 place-items-center rounded-xl font-display text-lg font-bold text-canvas">
           L
         </span>
-        <span className="whitespace-nowrap font-display text-lg font-semibold text-ink">
+        <span className={`font-display text-lg font-semibold text-ink ${labelCls}`}>
           Lumina
         </span>
       </div>
@@ -48,7 +54,8 @@ export function Sidebar() {
                 type="button"
                 onClick={() => setActive(item.id)}
                 aria-current={isActive ? "page" : undefined}
-                className="group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-magenta/50"
+                title={item.label}
+                className={`group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-magenta/50 ${rowCls}`}
               >
                 {isActive && (
                   <motion.span
@@ -63,7 +70,7 @@ export function Sidebar() {
                   }`}
                 />
                 <span
-                  className={`relative z-10 whitespace-nowrap transition-colors ${
+                  className={`relative z-10 whitespace-nowrap ${labelCls} ${
                     isActive ? "text-ink" : "text-muted group-hover:text-ink"
                   }`}
                 >
@@ -81,14 +88,15 @@ export function Sidebar() {
           type="button"
           onClick={() => setCollapsed((c) => !c)}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-magenta/50"
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-magenta/50 ${rowCls}`}
         >
           {collapsed ? (
             <PanelLeft className="h-5 w-5 shrink-0" />
           ) : (
             <PanelLeftClose className="h-5 w-5 shrink-0" />
           )}
-          <span className="whitespace-nowrap">Collapse</span>
+          <span className={`whitespace-nowrap ${labelCls}`}>Collapse</span>
         </button>
       </div>
     </nav>
