@@ -4,7 +4,7 @@ A high-fidelity, **dark-mode** student dashboard built for the Frontend Intern C
 
 **Concept — "Sunset Console":** a near-black canvas with magenta → amber light bleeding through the UI. Data _glows_ (progress bars and the contribution graph use the sunset ramp), tiles stagger in and lift on hover with spring physics, and the active nav item slides via a shared-layout pill.
 
-> **Live demo:** _add your Vercel URL here after deploying_
+> **Live demo:** **https://next-gen-learning-dashboard-mu-seven.vercel.app/**
 
 ---
 
